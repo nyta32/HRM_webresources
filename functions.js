@@ -70,7 +70,9 @@ socket.onmessage = (event) => {
 			document.getElementById('efficiency').innerText = ((data["158"]/data["155"])*100).toFixed(1);
 		}
 
-		document.getElementById('efficiency').innerText = ((data["158"]/data["155"])*100).toFixed(1);
+		if(data["efficiency"]){
+			document.getElementById('efficiency').innerText = data["efficiency"];
+		}
 
 		let workingMode = "Unknown";
 		switch(data["51"]) {
@@ -340,3 +342,4 @@ function fillFooter(){
 	document.getElementById('sw_ver').innerText = SWVER;
 	fillBootTime(starttime);
 }
+
