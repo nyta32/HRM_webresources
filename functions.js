@@ -1,7 +1,6 @@
 const logDiv = document.getElementById('log');
 let showBoot=false;
 
-
 function isJson(str) {
   try {
 	JSON.parse(str);
@@ -29,7 +28,7 @@ function convertToSignedInt16(value) {
 
 socket.onopen = () => {
   document.getElementById('status').innerText = "connected";
-  document.getElementById('status').style.color = 'green'
+  document.getElementById('status').style.color = '#585'
 };
 
 // Üzenet fogadása
@@ -50,11 +49,14 @@ socket.onmessage = (event) => {
 		}
 
 		// freeHeap
-		document.getElementById('freeHeap').innerText = data["fh"]+" bytes";
+		document.getElementById('freeHeap').innerText = data["fh"] + " / " + startmem + " = " + ((data["fh"]/startmem)*100).toFixed(1)+"%";
+		
+		
+		
 		if(data["fh"] < 10000 ){
 		  document.getElementById('freeHeap').style.color = 'red';
 		}else{
-		  document.getElementById('freeHeap').style.color = 'black';
+		  document.getElementById('freeHeap').style.color = '#555';
 		}
 
 		document.getElementById('t1').innerText = convertToSignedInt16(data["154"])/10;
@@ -104,9 +106,11 @@ socket.onmessage = (event) => {
 		document.getElementById('workingMode').innerText = workingMode;
 
 		let unit = "";
+		let unit2 = "";
 		switch(data["54"]) {
 			case 0:
-				unit = "m<sup>3</sup>/h";
+				unit = "<span class=\"mini2\">m<sup>3</sup>/h</span>";
+				unit2 = "<span class=\"mini3\">m<sup>3</sup>/h</span>";
 			break;
 			case 1:
 				unit = "Pa";
@@ -121,12 +125,12 @@ socket.onmessage = (event) => {
 				unit = "";
 		} 
 
-		document.getElementById('current_setpoint').innerHTML = data["53"] + " " + unit;
+		document.getElementById('current_setpoint').innerHTML = data["53"] + " " + unit2;
 
-		document.getElementById('supply_fan').innerHTML = data["64"] + unit + " <font style='color: #999;'>•</font> " + data["65"] + "Pa <font style='color: #999;'>•</font> " + ((data["66"]/255)*100).toFixed(1) + "%<font style='color: #999;'>@</font>" +data["67"] + "rpm";		
+		document.getElementById('supply_fan').innerHTML = data["64"] + unit + " <font style='color: #999;'>•</font> " + data["65"] + "<span class=\"mini2\"> Pa</span> <font style='color: #999;'>•</font> " + ((data["66"]/255)*100).toFixed(1) + "<span class=\"mini2\">%<font style='color: #999;'> @ </span></font>" +data["67"] + "<span class=\"mini2\"> rpm</span>";		
 		//document.getElementById('supply_fan').innerHTML += " ("+data["64"]+", "+data["65"]+", "+data["66"]+", "+data["67"]+")";
 		
-		document.getElementById('exhaust_fan').innerHTML = data["72"] + unit + " <font style='color: #999;'>•</font> " + data["73"] + "Pa <font style='color: #999;'>•</font> " + ((data["74"]/255)*100).toFixed(1) + "%<font style='color: #999;'>@</font>" +data["75"] + "rpm";
+		document.getElementById('exhaust_fan').innerHTML = data["72"] + unit + " <font style='color: #999;'>•</font> " + data["73"] + "<span class=\"mini2\"> Pa</span> <font style='color: #999;'>•</font> " + ((data["74"]/255)*100).toFixed(1) + "<span class=\"mini2\">%<font style='color: #999;'> @ </span></font>" +data["75"] + "<span class=\"mini2\"> rpm</span>";
 		//document.getElementById('exhaust_fan').innerHTML += " ("+data["72"]+", "+data["73"]+", "+data["74"]+", "+data["75"]+")";
 
 		let bypassStatus = "Unknown";
@@ -150,8 +154,8 @@ socket.onmessage = (event) => {
 		if(data["82"] == 0){  
 			antifreezeStatus = "INACTIVE";
 		}else if(data["82"] == 1){  
-			let percent = ((data["56"]/data["55"])*100).toFixed(0);
-			antifreezeStatus = "ACTIVE (in setpoint: "+ data["55"]  + unit + ", out setpoint: "+ data["56"]  + unit + " - "+percent+"%)";			
+			let percent = ((data["55"]/data["56"])*100).toFixed(0);
+			antifreezeStatus = "ACTIVE <span class=\"mini2\">(in "+ data["55"]  + unit + " / out "+ data["56"]  + unit + " = "+percent+"<span class=\"mini2\">%</span>)</span>";			
 		}
 		
 		document.getElementById('antifreeze_status').innerHTML = antifreezeStatus;    
@@ -164,12 +168,21 @@ socket.onmessage = (event) => {
 		document.getElementById('III').classList.remove('selectedBtn');
 		document.getElementById('boost').classList.remove('selectedBtn');
 
+		document.getElementById('auto_label').classList.remove('black');
+		document.getElementById('I_label').classList.remove('black');
+		document.getElementById('II_label').classList.remove('black');
+		document.getElementById('III_label').classList.remove('black');
+		document.getElementById('boost_label').classList.remove('black');
+
+
 
 		if(data["227"] == "1"){
 			curentSpeed = "boost";
 			document.getElementById('boost').classList.add('selectedBtn');
+			document.getElementById('boost_label').classList.add('black');
 		} else if(data["86"] == "6"){
 			document.getElementById('auto').classList.add('selectedBtn');
+			document.getElementById('auto_label').classList.add('black');
 		} else {
 
 			switch(data["52"]) {
@@ -179,25 +192,30 @@ socket.onmessage = (event) => {
 				case 1:
 					curentSpeed = "1 - LOW";
 					document.getElementById('I').classList.add('selectedBtn');
+					document.getElementById('I_label').classList.add('black');
 				break;
 				case 2:
 					curentSpeed = "2- MEDIUM";
 					document.getElementById('II').classList.add('selectedBtn');
+					document.getElementById('II_label').classList.add('black');
 				break;
 				case 3:
 					curentSpeed = "3- HIGH";
 					document.getElementById('III').classList.add('selectedBtn');
+					document.getElementById('III_label').classList.add('black');
 				break;
 
 				default:
 					curentSpeed = "";
 			}   
 		}
+		
+		let spaceholder = "&nbsp;&nbsp;";
 
-		document.getElementById('I').innerHTML=data["427"] + " " + unit;
-		document.getElementById('II').innerHTML=data["428"] + " " + unit;
-		document.getElementById('III').innerHTML=data["429"] + " " + unit;
-		document.getElementById('boost').innerHTML="Boost - "+data["547"] + " " + unit;
+		document.getElementById('I_label').innerHTML=spaceholder+"&nbsp;"+data["427"];
+		document.getElementById('II_label').innerHTML=spaceholder+data["428"];
+		document.getElementById('III_label').innerHTML=spaceholder+data["429"];
+		document.getElementById('boost_label').innerHTML=spaceholder+data["547"];
 
 
 		// Két 16 bites változó
@@ -208,7 +226,7 @@ socket.onmessage = (event) => {
 		const workingHours = (high16 << 16) | low16;
 		const workingDays = (workingHours/24)%365;
 		const workingYears = (workingHours/24)/365;
-		document.getElementById('workingTime').innerText = workingYears.toFixed(0) + " years " + workingDays.toFixed(0) + " days " + (workingHours%24).toFixed(0) + " hours (summa: "+workingHours+" hours)";
+		document.getElementById('workingTime').innerText = workingYears.toFixed(0) + "y " + workingDays.toFixed(0) + "d " + (workingHours%24).toFixed(0) + "h ("+workingHours+"h)";
 
 		let controlMode = "Unknown";
 			switch(data["86"]) {
@@ -292,7 +310,7 @@ socket.onmessage = (event) => {
 // Kapcsolat bontása
 socket.onclose = () => {
   document.getElementById('status').innerText = "disconnected";
-  document.getElementById('status').style.color = 'red';
+  document.getElementById('status').style.color = '855';
 };
 
 function sendMessage(message) {
@@ -337,8 +355,7 @@ function fillBootTime(btm){
 	document.getElementById('boot_time').innerText = year + '-' + ('0' + month).slice(-2) + '-' + ('0' + day).slice(-2) + ' ' + ('0' + hour).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
 }
   
-function fillFooter(){
-	document.getElementById('START_MEM').innerText = startmem;
+function fillFooter(){	
 	document.getElementById('sw_ver').innerText = SWVER;
 	fillBootTime(starttime);
 }

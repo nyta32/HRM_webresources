@@ -7,65 +7,142 @@
   <script type="text/javascript" src="config.js"></script>
   <script type="text/javascript" src="functions.js"></script>
   <style>
-	body { font-family: Arial, sans-serif; margin: 20px; }
-	#log { white-space: pre-wrap; border: 1px solid #ccc; padding: 10px; height: 500px; overflow-y: auto; background: #f9f9f9; }
-	button { margin-top: 10px; margin-left: 5px; font-size: 16px; height: 55px; width: 110px;}
-	td { font-weight: bold; height: 10px; border: 1px solid #fff; padding: 5px; width: 85px; }
-	table {border-collapse: collapse;}
+  * {
+	border: 0;
+	box-sizing: border-box;
+	//margin: 0;
+	padding: 0;
+}
 
-	#footer { white-space: pre-wrap; border: 1px solid #ccc; padding: 10px; height: auto; font-size: 12px;}
-	.mini {font-size: 15px;}
-	.selectedBtn {
-	  background-color: #555;
-	  color: white;
-	}
-	.right {
+body, .form {
+	display: flex;
+}
+body, input {
+	color: var(--fg);
+	font: 16px Helvetica, sans-serif;
+}
+body {
+	background-color: var(--bg);
+	background-image: linear-gradient(90deg,#0000003f,transparent);
+}
+.form, label {
+	width: 100%;
+}
+.form {
+	margin: auto;
+	max-width: 24em;
+	padding: 0 1.5em;
+}
+label {
+	display: block;
+	text-align: left;
+	-webkit-tap-highlight-color: transparent;
+	
+}
+button {
+	background-image: linear-gradient(#ffffff 33%,#414751 58%,#837b52,#c5baa1,#c3adaa);
+	border-radius: 50%;
+	box-shadow:
+		0.1em 0 0 #2726267f inset,
+		-0.1em 0 0 #27262600 inset,
+		0 0.1em 0 #afa490 inset,
+		0 -0.1em 0 #ffffff3f,
+		0 0.2em 0.5em #0000007f,
+		0 -0.1em 0 #926086 inset,
+		-0.1em -0.2em 0 #ffffff7f inset;
+	cursor: pointer;
+	display: block;
+	margin-bottom: 0.5em;
+	width: 40px;
+	height: 40px;
+	transition: box-shadow var(--transDur) ease-in-out;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+.selectedBtn, button:active  {
+	background-image: linear-gradient(#ffffff 33%,#414751 58%,#827a7b,#c0b6ac,#c3adaa);
+	box-shadow:
+		0.1em 0 0 #272626af inset,
+		-0.1em 0 0 #272626 inset,
+		0 0.1em 0 #847a62 inset,
+		0 -0.1em 0 #ffffff3f,
+		0 0.1em 0 #ffffff7f,
+		0 -0.1em 0 #722257 inset,
+		-0.1em -0.2em 0 #ffffff7f inset;
+		opacity: 0.85;
+}
+button:active {
+	opacity: 0.85;
+}
+button:active {
+	outline: transparent;
+}
+button {
+	opacity: 1;
+	transition: opacity var(--transDur) ease-in-out;
+}
+table {border-collapse: collapse; 
+	font-family:"Lato";
+	color:#555; 
+}
+td {padding: 3px; border-bottom: 1px solid #bbb;}
+button { font-size: 16px; color: #777;}
+#footer { white-space: pre-wrap; padding: 10px; height: auto; font-size: 11px;color:#555;}
+.mini {font-size: 15px;}
+.mini2 {font-size: 13px;}
+.mini3 {font-size: 10px;}
+.right {
 	text-align: right;
-	background-color: #fafafa;
+	padding-right: 205px;
+}	
+.right2 {
+	font-size: 16px;	
+	padding-left: 5px;
+}
+.filter {border-radius: 50%;}
+.black{
 	color: black;
-	font-weight: bold;
-	font-weight: normal;
-	width: 60px;
-	}
-	.right2 {
-	width: 450px;
-	background-color: #fafafa;
-	color: black;
-	font-weight: normal;
-	}
-  </style>
+}
+a{
+	color: #557;
+}
+</style>
 </head>
 <body style="margin: 5px;" onload="fillFooter()">
-
-  <div>
+<div  style="width: 360px; border: 1px solid #bbb;">
   <table>
-  <tr title="Kintről beszívott levegő hőmérséklete"><td>T Kinti:</td><td class="right"><span id="t1">-</span> °C</td></tr>
+	<tr title="Kintről beszívott levegő hőmérséklete"><td>T <span class="mini2">Kint</span></td><td class="right" colspan="2"><span id="t1">-</span><span class="mini2"> °C</span></td></tr> 
+    <tr title="Bentről beszívott (lakás) levegő hőmérséklete"><td>T <span class="mini2">Lakás</span></td><td class="right" colspan="2"><span id="t2">-</span><span class="mini2"> °C</span></td></tr>
+    <tr title="Gépből a szabadba kifújt levegő hőmérséklete"><td>T <span class="mini2">Kifújt</span></td><td class="right" colspan="2"><span id="t3">-</span><span class="mini2"> °C</span></td></tr>
+    <tr title="Gépből a lakásba befújt levegő hőmérséklete"><td>T <span class="mini2">Befújt</span></td><td class="right" colspan="2"><span id="t5">-</span><span class="mini2"> °C</span></td></tr>
+    <tr title="Hőcserélés hatásfoka (lakásba befújt/elszívott levegő)"><td>Hatásfok</td><td class="right" colspan="2"><span id="efficiency">-</span><span class="mini2"> &nbsp;%</span></td></tr>
   
-    <tr title="Bentről beszívott (lakás) levegő hőmérséklete"><td>T Lakás:</td><td class="right"><span id="t2">-</span> °C</td></tr>
-    <tr title="Gépből a szabadba kifújt levegő hőmérséklete"><td>T Kifújt:</td><td class="right"><span id="t3">-</span> °C</td></tr>
-    <tr title="Gépből a lakásba befújt levegő hőmérséklete"><td>T Befújt:</td><td class="right"><span id="t5">-</span> °C</td></tr>
-    <tr title="Hőcserélés hatásfoka (lakásba befújt/elszívott levegő)"><td>Hatásfok:</td><td class="right"><span id="efficiency">-</span> %</td></tr>
+	<tr><td colspan="3">
+	<br/>
+		<div class="form">
+		<label><button id="auto" onclick="sendMessage('auto')"></button><span id="auto_label">&nbsp;&nbsp;auto</span></label>&nbsp;&nbsp;
+		<label><button id="I" onclick="sendMessage('1')"></button><span id="I_label">I</span></label>&nbsp;&nbsp;
+		<label><button id="II" onclick="sendMessage('2')"></button><span id="II_label">II</span></label>&nbsp;&nbsp;
+		<label><button id="III" onclick="sendMessage('3')"></button><span id="III_label">II</span></label>&nbsp;&nbsp;
+		<label><button id="boost" onclick="sendMessage('boost')"></button><span id="boost_label">boost</span></label>
+		</div>
+	<br/>
+	</td></tr>
+  
+    <tr title="Bypass szelep állapota."><td>Bypass</td><td class="right2" colspan="2"> <span id="bypass_status" class="mini">-</span></td></tr>
+    <tr class="hide" id="AFext" title="Antifreeze lefagyás megelőzésére több levegőt szív be mint amennyit kifúj ."><td>Antifreeze</td><td class="right2" colspan="2"> <span id="antifreeze_status" class="mini">-</span></td></tr>    
+	<tr title="Befújó ventillátor teljesítmény adatai."><td>Befújás</td><td class="right2" colspan="2"> <span class="mini" id="supply_fan">-</span></td></tr>
+	<tr title="kiszívó ventillátor teljesítmény adatai."><td>Elszívás</td><td class="right2" colspan="2"><span class="mini" id="exhaust_fan">-</span></td></tr>  
+	<tr title="Szűrőcsere."><td>Szűrőcsere<br/>időpontja</td><td class="right2" ><span id="filterchangetime">-</span></td><td>
+	<div class="form"><label><button class="filter" id="filter" onclick="const tm = new Date(); sendMessage('filter:' + (tm.getTime()/3600000).toFixed(0));" style="height: 40px; width: 40px; border-radius: 15%;margin: 5px;" ></button><span>&nbsp;&nbsp;csere</span></label></div>
+	</td></tr>
+	<tr><td colspan="3">
+	<div id="footer"> &#8226; <span id="status" style="color:#955;">connecting...</span> &#8226; working mode <span id="workingMode">-</span> &#8226; current setpoint <span id="current_setpoint">-</span> &#8226; refresh period <span id="websocketRefreshTimemSec">-</span> &#8226; last refresh time <span id="refresh_time">-</span> &#8226; bypass calc <span id="bypassData">-</span> &#8226; digital outputs <span id="digitalOutputsString">-</span> &#8226; control mode <span id="controlMode">-</span> &#8226; HRM selftime <span id="selfTime">-</span> &#8226; HRM working time <span id="workingTime">-</span> &#8226; used mem (bytes) <span id="freeHeap">-</span> &#8226; boot <span id="boot_time">-</span> &#8226; v<span id="sw_ver">-</span> &#8226; <a href="/wifisetup">WIFI beállítás</a> &#8226; <span id="boot"></span> <a href="/filter">filter cserék</a> &#8226;</div>
+	</td></tr>
   </table>
-  </div>
-  <div>
-      <button id="I" onclick="sendMessage('1')">I</button><button id="II" onclick="sendMessage('2')">II</button><button id="III" onclick="sendMessage('3')">III</button><br/><button id="auto" onclick="sendMessage('auto')">auto<sup></sup></button><button id="boost" onclick="sendMessage('boost')" style="width: 225px;">Boost</button>
-  </div>
-  <br/>
-  <div>      
-  <table>
-	<tr title="Befújó ventillátor teljesítmény adatai."><td>Befújás:</td><td class="right2"> <span class="mini" id="supply_fan">-</span></td></tr>
-	<tr title="kiszívó ventillátor teljesítmény adatai."><td>Elszívás:</td><td class="right2"><span class="mini" id="exhaust_fan">-</span></td></tr>  
-    <tr title="Bypass szelep állapota."><td>Bypass:</td><td class="right2" > <span id="bypass_status" class="mini">-</span></td></tr>
-    <tr class="hide" id="AFext" title="Antifreeze lefagyás megelőzésére több levegőt szív be mint amennyit kifúj ."><td>Antifreeze:</td><td class="right2" > <span id="antifreeze_status" class="mini">-</span></td></tr>    
-	<tr title="Szűrőcsere."><td>Szűrőcsere:</td><td class="right2" ><span id="filterchangetime">-</span> <button id="filter" onclick="const tm = new Date(); sendMessage('filter:' + (tm.getTime()/3600000).toFixed(0));" style="height: 2em;" > Filter csere</button></td></tr>
-  </table>
-  </div>  
-  <br/>
-  <div id="footer"> &#8226; <span id="status" style="color:red;">connecting...</span> &#8226; working mode <span id="workingMode">-</span> &#8226; current setpoint <span id="current_setpoint">-</span> &#8226; refresh period <span id="websocketRefreshTimemSec">-</span> &#8226; last refresh time <span id="refresh_time">-</span> &#8226; bypass calc <span id="bypassData">-</span> &#8226; digital outputs <span id="digitalOutputsString">-</span> &#8226; control mode <span id="controlMode">-</span> &#8226; vent. unit selftime <span id="selfTime">-</span> &#8226; unit working time <span id="workingTime">-</span> &#8226; free mem <span id="freeHeap">-</span> (<span id="START_MEM">-</span>) &#8226; boot <span id="boot_time">-</span> &#8226; <span id="sw_ver">-</span> &#8226; <a href="/wifisetup">WIFI kapcsolati adatok megadása.</a> &#8226; <span id="boot"></span> <a href="/filter">filter cserék &#8226;</a></div>
-  <script>
 
-
-  </script>
-  <br/>
+  
+</div>
 </body>
 </html>
