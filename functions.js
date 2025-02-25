@@ -1,5 +1,7 @@
 const logDiv = document.getElementById('log');
 let showBoot=false;
+let lastupdate = Date.now();
+
 
 function isJson(str) {
   try {
@@ -18,23 +20,71 @@ function numpadding(num) {
 }
 
 function getCurrentTimestamp() {
-	const now = new Date();
-	return now.toISOString().replace('T', ' ').substring(0, 19); // "YYYY-MM-DD HH:MM:SS"
-  }
+	
+	const now = new Date();    
+	const [month, day, year] = [
+	  now.getMonth(),
+	  now.getDate(),
+	  now.getFullYear(),
+	];
+	const [hour, minutes, seconds] = [
+	  now.getHours(),
+	  now.getMinutes(),
+	  now.getSeconds(),
+	];
+	return year + '-' + ('0' + month).slice(-2) + '-' + ('0' + day).slice(-2) + ' ' + ('0' + hour).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+		
+	
+ }
+
+function hideUnhide(){
+	if(document.getElementById("footer").className == "hide"){
+		document.getElementById("footer").className = "";		
+	} else {
+		document.getElementById("footer").className = "hide";
+	}
+}
 
 function convertToSignedInt16(value) {
   return value > 32767 ? value - 65536 : value;
 }
 
-socket.onopen = () => {
-  document.getElementById('status').innerText = "connected";
-  document.getElementById('status').style.color = '#585'
-};
+
+var intervalId = setInterval(function() {
+	let updatesec = ((Date.now() - lastupdate)/1000).toFixed(0);
+	console.log("Check socket state (updated: " + updatesec + "s)");
+	// socket.readyState !== WebSocket.OPEN ||
+	if ( 60 < updatesec) {
+		lastupdate = Date.now();
+		document.getElementById("led").className="led-red";
+		setTimeout(function() {
+			connect();
+			socket.onopen = () => { socketonopen(); };
+			socket.onmessage = (event) => {socketonmessage(event);}			
+			socket.onclose = () => {socketonclose();}							
+		}, 1000);
+	}
+}, 5000);
+
+
+socket.onopen = () => { socketonopen(); };
+function socketonopen(){
+	lastupdate = Date.now();
+	document.getElementById('status').innerText = "connected";
+	document.getElementById('status').style.color = '#585'
+	document.getElementById("led").className="led-green";
+}
+
+
+
 
 // Üzenet fogadása
-socket.onmessage = (event) => {
-	
+socket.onmessage = (event) => {socketonmessage(event);}
+function socketonmessage(event){
 	if(isJson(event.data)){
+		
+		lastupdate = Date.now();
+		
 		
 		const data = JSON.parse(event.data); // JSON feldolgozása
 		console.log("%j", JSON.parse(event.data));
@@ -307,10 +357,13 @@ socket.onmessage = (event) => {
 	};
 };
 
+socket.onclose = () => {socketonclose();}
+
 // Kapcsolat bontása
-socket.onclose = () => {
+function socketonclose(){
   document.getElementById('status').innerText = "disconnected";
-  document.getElementById('status').style.color = '855';
+  document.getElementById('status').style.color = '#855';
+  document.getElementById("led").className="led-red";
 };
 
 function sendMessage(message) {

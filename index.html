@@ -84,7 +84,8 @@ button {
 }
 table {border-collapse: collapse; 
 	font-family:"Lato";
-	color:#555; 
+	color:#555;
+	width: 100%;
 }
 td {padding: 3px; border-bottom: 1px solid #bbb;}
 button { font-size: 16px; color: #777;}
@@ -107,6 +108,40 @@ button { font-size: 16px; color: #777;}
 a{
 	color: #557;
 }
+
+
+.led-green {
+  margin: 5px;
+  width: 15px;
+  height: 15px;
+  background-color: #ABFF00;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px;
+  opacity: 0.35;
+}
+
+.led-red {
+  margin: 5px;
+  width: 15px;
+  height: 15px;
+  background-color: #F00;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
+  opacity: 0.55;
+}
+
+.led-blue {
+  margin: 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: #24E0FF;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #006 0 -1px 9px, #3F8CFF 0 2px 14px;
+}
+
+.hide{
+	display: none;
+}
 </style>
 </head>
 <body style="margin: 5px;" onload="fillFooter()">
@@ -121,11 +156,11 @@ a{
 	<tr><td colspan="3">
 	<br/>
 		<div class="form">
-		<label><button id="auto" onclick="sendMessage('auto')"></button><span id="auto_label">&nbsp;&nbsp;auto</span></label>&nbsp;&nbsp;
-		<label><button id="I" onclick="sendMessage('1')"></button><span id="I_label">I</span></label>&nbsp;&nbsp;
-		<label><button id="II" onclick="sendMessage('2')"></button><span id="II_label">II</span></label>&nbsp;&nbsp;
-		<label><button id="III" onclick="sendMessage('3')"></button><span id="III_label">II</span></label>&nbsp;&nbsp;
-		<label><button id="boost" onclick="sendMessage('boost')"></button><span id="boost_label">boost</span></label>
+		<label><button id="I" onclick="sendMessage('1')"></button><span id="I_label">I</span></label>&nbsp;
+		<label><button id="II" onclick="sendMessage('2')"></button><span id="II_label">II</span></label>&nbsp;
+		<label><button id="III" onclick="sendMessage('3')"></button><span id="III_label">II</span></label>&nbsp;
+		<label><button id="boost" onclick="sendMessage('boost')"></button><span id="boost_label">boost</span></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<label><button id="auto" onclick="sendMessage('auto')"></button><span id="auto_label">&nbsp;&nbsp;auto</span></label>
 		</div>
 	<br/>
 	</td></tr>
@@ -137,12 +172,17 @@ a{
 	<tr title="Szűrőcsere."><td>Szűrőcsere<br/>időpontja</td><td class="right2" ><span id="filterchangetime">-</span></td><td>
 	<div class="form"><label><button class="filter" id="filter" onclick="const tm = new Date(); sendMessage('filter:' + (tm.getTime()/3600000).toFixed(0));" style="height: 40px; width: 40px; border-radius: 15%;margin: 5px;" ></button><span>&nbsp;&nbsp;csere</span></label></div>
 	</td></tr>
+	<tr><td colspan="2">
+	<div id="led" class="led-red"></div>
+	</td>	
+	<td style="text-align: right;">
+	<div onclick="hideUnhide();"><img src="arrow.gif" />&nbsp;</div>
+	</td>
+	</tr>
 	<tr><td colspan="3">
-	<div id="footer"> &#8226; <span id="status" style="color:#558;">connecting...</span> &#8226; working mode <span id="workingMode">-</span> &#8226; current setpoint <span id="current_setpoint">-</span> &#8226; refresh period <span id="websocketRefreshTimemSec">-</span> &#8226; last refresh time <span id="refresh_time">-</span> &#8226; bypass calc <span id="bypassData">-</span> &#8226; digital outputs <span id="digitalOutputsString">-</span> &#8226; control mode <span id="controlMode">-</span> &#8226; HRM selftime <span id="selfTime">-</span> &#8226; HRM working time <span id="workingTime">-</span> &#8226; free mem (bytes) <span id="freeHeap">-</span> &#8226; boot <span id="boot_time">-</span> &#8226; v<span id="sw_ver">-</span> &#8226; <a href="/wifisetup">WIFI beállítás</a> &#8226; <span id="boot"></span> <a href="/filter">filter cserék</a> &#8226; <a href="https://thingspeak.mathworks.com/channels/2852202">T history</a> &#8226; <a href="https://thingspeak.mathworks.com/channels/2852203">Motor history</a> &#8226; <a href="https://thingspeak.mathworks.com/channels/2852209">System data</a> &#8226; </div>
+	
+	<div id="footer" class="hide"> &#8226; <span id="status" style="color:#558;">connecting...</span> &#8226; working mode <span id="workingMode">-</span> &#8226; current setpoint <span id="current_setpoint">-</span> &#8226; refresh period <span id="websocketRefreshTimemSec">-</span> &#8226; last refresh time <span id="refresh_time">-</span> &#8226; bypass calc <span id="bypassData">-</span> &#8226; digital outputs <span id="digitalOutputsString">-</span> &#8226; control mode <span id="controlMode">-</span> &#8226; HRM selftime <span id="selfTime">-</span> &#8226; HRM working time <span id="workingTime">-</span> &#8226; free mem (bytes) <span id="freeHeap">-</span> &#8226; boot <span id="boot_time">-</span> &#8226; v<span id="sw_ver">-</span> &#8226; <a href="/wifisetup">WIFI beállítás</a> &#8226; <span id="boot"></span> <a href="/filter">filter cserék</a> &#8226; <a href="https://thingspeak.mathworks.com/channels/2852202">T history</a> &#8226; <a href="https://thingspeak.mathworks.com/channels/2852203">Motor history</a> &#8226; <a href="https://thingspeak.mathworks.com/channels/2852209">System data</a> &#8226; </div>
 	</td></tr>
-  </table>
-
-  
-</div>
+  </table></div>
 </body>
 </html>
