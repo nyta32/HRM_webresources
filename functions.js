@@ -186,26 +186,32 @@ function socketonmessage(event){
 		let bypassStatus = "Unknown";
 		switch(data["83"]) {
 			case 0:
+				document.getElementById("Bypassext").className = "hide";
 				bypassStatus = "CLOSED";
 			break;
 			case 1:
+				document.getElementById("Bypassext").className = "";
 				bypassStatus = "OPEN - " + data["90"] + " %";
 			break;
 			case 2:
+				document.getElementById("Bypassext").className = "";
 				bypassStatus = "PARTIALLY OPEN - "  + data["90"] + " %";
 			break;
 			default:
+				document.getElementById("Bypassext").className = "hide";
 				bypassStatus = "";
 		} 
 
 
 		document.getElementById('bypass_status').innerText = bypassStatus;
 		let antifreezeStatus = "-";
-		if(data["82"] == 0){  
+		if(data["82"] == 0){
+			document.getElementById("AFext").className = "hide";
 			antifreezeStatus = "INACTIVE";
 		}else if(data["82"] == 1){  
 			let percent = ((data["55"]/data["56"])*100).toFixed(0);
 			antifreezeStatus = "ACTIVE <span class=\"mini2\">(in "+ data["55"]  + unit + " / out "+ data["56"]  + unit + " = "+percent+"<span class=\"mini2\">%</span>)</span>";			
+			document.getElementById("AFext").className = "";
 		}
 		
 		document.getElementById('antifreeze_status').innerHTML = antifreezeStatus;    
