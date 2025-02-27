@@ -2,7 +2,6 @@ const logDiv = document.getElementById('log');
 let showBoot=false;
 let lastupdate = Date.now();
 
-
 function isJson(str) {
   try {
 	JSON.parse(str);
@@ -82,7 +81,7 @@ function socketonopen(){
 socket.onmessage = (event) => {socketonmessage(event);}
 function socketonmessage(event){
 	if(isJson(event.data)){
-		
+		let errors = '';
 		lastupdate = Date.now();
 		
 		
@@ -288,9 +287,11 @@ function socketonmessage(event){
 			switch(data["86"]) {
 			case 1:
 				controlMode = "FATAL ERROR: Fans are stopped";
+				errors+="FATAL ERROR: Fans are stopped<br/>\n";
 			break;
 			case 2:
 				controlMode = "FIRE ALARM (registers 40511 and 40512)";
+				errors+="FIRE ALARM (registers 40511 and 40512)<br/>\n";
 			break;
 			case 3:
 				controlMode = "RC: remote control RC TAC5";
@@ -360,6 +361,21 @@ function socketonmessage(event){
 			document.getElementById('filterchangetime').innerText = getTimeFromTs(data["lastFilterChange"]*3600000);
 		}
  
+		if(0<data["300"]){errors+="300="+data["300"]+"<br/>\n";}
+		if(0<data["301"]){errors+="301="+data["301"]+"<br/>\n";}
+		if(0<data["302"]){errors+="302="+data["302"]+"<br/>\n";}
+		if(0<data["303"]){errors+="303="+data["303"]+"<br/>\n";}
+		if(0<data["304"]){errors+="304="+data["304"]+"<br/>\n";} 
+		
+		if(errors.length && document.getElementById("errors").className == "hide"){
+			document.getElementById("errors").className = "";
+			document.getElementById('errors').innerHTML = errors;			
+		}
+		if(errors.length == 0 && document.getElementById("errors").className != "hide"){
+			document.getElementById("errors").className = "hide";
+			document.getElementById('errors').innerHTML = "";			
+		}
+
 	};
 };
 

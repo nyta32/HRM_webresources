@@ -172,6 +172,9 @@ a{
 	<tr title="Szűrőcsere."><td>Szűrőcsere<br/>időpontja</td><td class="right2" ><span id="filterchangetime">-</span></td><td>
 	<div class="form"><label><button class="filter" id="filter" onclick="const tm = new Date(); sendMessage('filter:' + (tm.getTime()/3600000).toFixed(0));" style="height: 40px; width: 40px; border-radius: 15%;margin: 5px;" ></button><span>&nbsp;&nbsp;csere</span></label></div>
 	</td></tr>
+	
+	<tr id="errors" class="hide" style="color: red;"><td colspan="3"></td></tr>
+	
 	<tr><td colspan="2">
 	<div id="led" class="led-red"></div>
 	</td>	
