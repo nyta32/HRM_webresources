@@ -94,6 +94,10 @@ function socketonmessage(event){
 			if(data["lastFilterChange"]){
 				document.getElementById('filterchangetime').innerText = getTimeFromTs(data["lastFilterChange"]*3600000);
 			}
+			
+			if(data["modbusErrors"]){
+				document.getElementById('modbus_errors').innerText = data["modbusErrors"];
+			}			
 
 			if(!showBoot ){
 				if(60000< parseInt(data["starttime"])){
@@ -114,8 +118,8 @@ function socketonmessage(event){
 			}
 
 			document.getElementById('t1').innerText = convertToSignedInt16(data["154"])/10;
-			document.getElementById('t2').innerText = data["155"].toFixed(1)/10;
-			document.getElementById('t3').innerText = data["156"].toFixed(1)/10;
+			document.getElementById('t2').innerText = String(data["155"].toFixed(1)/10);
+			document.getElementById('t3').innerText = String(data["156"].toFixed(1)/10);
 
 			// external temp sensor
 			if(data["ets"]){ 
