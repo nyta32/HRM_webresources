@@ -90,6 +90,10 @@ function socketonmessage(event){
 			console.log("%j", JSON.parse(event.data));
 
 			fillBootTime(data["starttime"]);
+			
+			if(data["lastFilterChange"]){
+				document.getElementById('filterchangetime').innerText = getTimeFromTs(data["lastFilterChange"]*3600000);
+			}
 
 			if(!showBoot ){
 				if(60000< parseInt(data["starttime"])){
@@ -357,11 +361,7 @@ function socketonmessage(event){
 			//websocketRefreshTimemSec
 			document.getElementById('websocketRefreshTimemSec').innerText = (data["refr"]/1000)+"s";
 			document.getElementById('refresh_time').innerText = getCurrentTimestamp();
-			
-			if(data["lastFilterChange"]){
-				document.getElementById('filterchangetime').innerText = getTimeFromTs(data["lastFilterChange"]*3600000);
-			}
-	 
+				 
 			if(0<data["300"]){errors+="300="+data["300"]+"<br/>\n";}
 			if(0<data["301"]){errors+="301="+data["301"]+"<br/>\n";}
 			if(0<data["302"]){errors+="302="+data["302"]+"<br/>\n";}
