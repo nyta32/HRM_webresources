@@ -97,6 +97,7 @@ function socketonmessage(event){
 			
 			if(data["modbusErrors"]){
 				document.getElementById('modbus_errors').innerText = data["modbusErrors"];
+				document.getElementById('modbus_errors').style.color = 'red';
 			}			
 
 			if(!showBoot ){
@@ -107,7 +108,9 @@ function socketonmessage(event){
 			}
 
 			// freeHeap
-			document.getElementById('freeHeap').innerText = data["fh"] + " / " + startmem + " = " + ((data["fh"]/startmem)*100).toFixed(1)+"%";
+			if(data["fh"]){
+				document.getElementById('freeHeap').innerText = data["fh"] + " / " + startmem + " = " + ((data["fh"]/startmem)*100).toFixed(1)+"%";
+			}
 			
 			
 			
@@ -117,9 +120,15 @@ function socketonmessage(event){
 			  document.getElementById('freeHeap').style.color = '#555';
 			}
 
-			document.getElementById('t1').innerText = convertToSignedInt16(data["154"])/10;
-			document.getElementById('t2').innerText = String(data["155"].toFixed(1)/10);
-			document.getElementById('t3').innerText = String(data["156"].toFixed(1)/10);
+			if(data["154"]){
+				document.getElementById('t1').innerText = convertToSignedInt16(data["154"])/10;
+			}
+			if(data["155"]){
+				document.getElementById('t2').innerText = data["155"].toFixed(1)/10;
+			}
+			if(data["156"]){
+				document.getElementById('t3').innerText = data["156"].toFixed(1)/10;
+			}
 
 			// external temp sensor
 			if(data["ets"]){ 
@@ -183,10 +192,13 @@ function socketonmessage(event){
 					unit = "";
 			} 
 
-			document.getElementById('current_setpoint').innerHTML = data["53"] + " " + unit2;
+			if(data["53"]){
+				document.getElementById('current_setpoint').innerHTML = data["53"] + " " + unit2;
+			}
 
+			
 			document.getElementById('supply_fan').innerHTML = data["64"] + unit + " <font style='color: #999;'>•</font> " + data["65"] + "<span class=\"mini2\"> Pa</span> <font style='color: #999;'>•</font> " + ((data["66"]/255)*100).toFixed(1) + "<span class=\"mini2\">%<font style='color: #999;'> @ </span></font>" +data["67"] + "<span class=\"mini2\"> rpm</span>";		
-			//document.getElementById('supply_fan').innerHTML += " ("+data["64"]+", "+data["65"]+", "+data["66"]+", "+data["67"]+")";
+			//document.getElementById('supply_fan').innerHTML += " ("+data["64"]+", "+data["65"]+", "+data["66"]+", "+data["67"]+")";			
 			
 			document.getElementById('exhaust_fan').innerHTML = data["72"] + unit + " <font style='color: #999;'>•</font> " + data["73"] + "<span class=\"mini2\"> Pa</span> <font style='color: #999;'>•</font> " + ((data["74"]/255)*100).toFixed(1) + "<span class=\"mini2\">%<font style='color: #999;'> @ </span></font>" +data["75"] + "<span class=\"mini2\"> rpm</span>";
 			//document.getElementById('exhaust_fan').innerHTML += " ("+data["72"]+", "+data["73"]+", "+data["74"]+", "+data["75"]+")";
