@@ -378,15 +378,15 @@ function socketonmessage(event){
 			document.getElementById('websocketRefreshTimemSec').innerText = (data["refr"]/1000)+"s";
 			document.getElementById('refresh_time').innerText = getCurrentTimestamp();
 				 
-			if(0<data["300"]){errors+="300="+data["300"]+"<br/>\n";}
-			if(0<data["301"]){errors+="301="+data["301"]+"<br/>\n";}
-			if(0<data["302"]){errors+="302="+data["302"]+"<br/>\n";}
-			if(0<data["303"]){errors+="303="+data["303"]+"<br/>\n";}
-			if(0<data["304"]){errors+="304="+data["304"]+"<br/>\n";} 
+			if(0<data["300"]){errors+="reg.: 300="+data["300"]+"<br/>\n";}
+			if(0<data["301"]){errors+="reg.: 301="+data["301"]+"<br/>\n";}
+			if(0<data["302"]){errors+="reg.: 302="+data["302"]+"<br/>\n";}
+			if(0<data["303"]){errors+="reg.: 303="+data["303"]+"<br/>\n";}
+			if(0<data["304"]){errors+="reg.: 304="+data["304"]+"<br/>\n";} 
 			
 			if(errors.length && document.getElementById("errors").className == "hide"){
 				document.getElementById("errors").className = "";
-				document.getElementById('errors').innerHTML = errors;			
+				document.getElementById('errors').innerHTML = "Hibák: " + errors;			
 			}
 			if(errors.length == 0 && document.getElementById("errors").className != "hide"){
 				document.getElementById("errors").className = "hide";
